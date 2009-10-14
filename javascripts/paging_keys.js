@@ -102,30 +102,31 @@ var pagingKeys = function() {
 	
 	// TODO: escape other incompatible browsers
 	function init() {
-	  if (Prototype.Browser.MobileSafari) { return; }
-	  Event.observe(window, 'load', function() { 
-			var b = document.body;
-			b.className = b.className ? b.className + (' '+config.additionalBodyClass) : config.additionalBodyClass;
-			buildItemMap();
-			positionNav();
-			initHotKeys();
-		});
+      //if (Prototype.Browser.MobileSafari) { return; }
+      $(function() {
+        var b = document.body;
+        b.className = b.className ? b.className + (' '+config.additionalBodyClass) : config.additionalBodyClass;
+        buildItemMap();
+        positionNav();
+        initHotKeys();       
+      });
+
 		Event.observe(window, 'scroll', function() { positionNav(); })
 	}
 	
 	// 'prev' and 'next' are used to identify items and their position in the map
 	function buildItemMap() {
 	  asset_loaded = false;
-	  item_map.clear();
+	  item_map = []; //.clear();
 
-	  if ($$(config.prevPageSelector)[0]) {
-		  if($$(config.prevPageSelector)[0].href)
+	  if ($(config.prevPageSelector)[0]) {
+		  if($(config.prevPageSelector)[0].href)
 	     item_map.push({id: 'prev', y: 0});
 	  }
 	  else
 	    item_map.push({id: null, y: 0});
 
-	  var nodes = $$(config.nodeSelector);
+	  var nodes = $(config.nodeSelector);
 	  for (var i = 0; i < nodes.length; i++) {
       addItemToMap(nodes[i]);
 	  }
@@ -135,22 +136,22 @@ var pagingKeys = function() {
 	  });
 
 	  var last = item_map.length - 1;
-		if($$(config.nextPageSelector)[0]) {
-	  	if($$(config.nextPageSelector)[0].href)
+		if($(config.nextPageSelector)[0]) {
+	  	if($(config.nextPageSelector)[0].href)
 	    	item_map.push({id: 'next', y: document.body.scrollHeight});
 	  }
 	  asset_loaded = true;
 	}
 	
 	function addItemToMap(n) {
-	  var pos = Position.cumulativeOffset(n);
-	  item_map.push({id: n.id, y: pos[1] - 20});
+	  var pos = $(n).offset();
+	  item_map.push({id: n.id, y: pos.top - 20});
 	}
 	
 	// optional, repositioning of the floating navigation element
 	function positionNav() {
 		if($(config.pagingNavId))
-			$(config.pagingNavId).setStyle({ position: 'absolute', right: '10px', top: (getScrollTop()+10)+'px' });
+			$(config.pagingNavId).css({ position: 'absolute', right: '10px', top: (getScrollTop()+10)+'px' });
 	}
 
   // enable hotkeys
@@ -173,20 +174,20 @@ var pagingKeys = function() {
 
 	function getWindowBounds() {
 	  return {
-	    'w': document.viewport.getDimensions()['width'],
-	    'h': document.viewport.getDimensions()['height'],
-	    'x': document.viewport.getScrollOffsets()['left'],
-	    'y': document.viewport.getScrollOffsets()['top']
+	    'w': $(window).width(),
+	    'h': $(window).height(),
+	    'x': $(window).scrollLeft(),
+	    'y': $(window).scrollTop()
 	  };
 	}
 
 	function getScrollTop() {
-		return document.viewport.getScrollOffsets()['top']
+		return $(window).scrollTop(); //document.viewport.getScrollOffsets()['top']
 	}
 
 	function redirect(href) {
 		/* fix IE */
-	  if (Prototype.Browser.IE) {
+	  if ($.browser.msie) {
 	    var a = document.createElement('a');
 	    a.style.display = 'none';
 	    a.href = href;
@@ -260,10 +261,11 @@ var pagingKeys = function() {
 	  var sh = document.body.scrollHeight;
 	  var ch = 0;
 
-	  if (Prototype.Browser.WebKit)
-	    ch = window.innerHeight;
-	  else
-	    ch = document.body.clientHeight;
+    ch = $(window).height();
+	  //if (Prototype.Browser.WebKit)
+	  //  ch = window.innerHeight;
+	  //else
+	  //  ch = document.body.clientHeight;
 
 	  return {
       'top': st,
@@ -292,9 +294,9 @@ var pagingKeys = function() {
 	}
 
 	function movePageNext() {
-		if ($$(config.nextPageSelector)[0]) {
-	  	if ($$(config.nextPageSelector)[0].href != null) {
-	    	redirect($$(config.nextPageSelector)[0].href);
+		if ($(config.nextPageSelector)[0]) {
+	  	if ($(config.nextPageSelector)[0].href != null) {
+	    	redirect($(config.nextPageSelector)[0].href);
 	    	disableHotKeys();
 	    	return true;
 			}
@@ -303,8 +305,8 @@ var pagingKeys = function() {
 	}
 
 	function movePagePrev() {
-	  if ($$(config.prevPageSelector)[0].href != null) {
-	    redirect($$(config.prevPageSelector)[0].href+'#'+config.bottomAnchor);
+	  if ($(config.prevPageSelector)[0].href != null) {
+	    redirect($(config.prevPageSelector)[0].href+'#'+config.bottomAnchor);
 	    disableHotKeys();
 	    return true;
 	  }
