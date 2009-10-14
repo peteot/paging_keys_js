@@ -111,7 +111,8 @@ var pagingKeys = function() {
         initHotKeys();       
       });
 
-		Event.observe(window, 'scroll', function() { positionNav(); })
+      //Event.observe(window, 'scroll', function() { positionNav(); })
+      $(window).scroll(function() { positionNav(); });
 	}
 	
 	// 'prev' and 'next' are used to identify items and their position in the map
