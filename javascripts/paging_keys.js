@@ -85,7 +85,7 @@ var pagingKeys = function() {
     nodeSelector:        '.hentry h2 a.entry-title',  // used to select each item on the page and place in the map
     prevPageSelector:    '.prev_page',                // link on this element should always jump to prev page a.prev_page
 		nextPageSelector:    '.next_page',                // link on this element should always jump to next page a.next_page
-		pagingNavId:         'paging-nav',                // dom id of the floating page navigation element
+		pagingNavId:         '#paging-nav',                // dom id of the floating page navigation element
 		keyNext:             'j',                         // hot keys used 
 		keyPrev:             'k',
 		keyNextPage:         'h',
